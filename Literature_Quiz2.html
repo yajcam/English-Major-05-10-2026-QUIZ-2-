@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Literature Pre-Board Examination – Quiz 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4f8;
+    color: #2d3748;
+    padding: 20px;
+  }
+
+  header {
+    text-align: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 20px 18px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  header .gov { font-size: 12px; color: #718096; letter-spacing: 1px; text-transform: uppercase; }
+  header h1 { font-size: 20px; font-weight: 700; color: #1a365d; margin: 6px 0 4px; }
+  header .sub { font-size: 13px; color: #4a5568; margin-bottom: 4px; }
+  header .date { font-size: 12px; color: #718096; }
+
+  .instructions {
+    background: #ebf8ff;
+    border-left: 4px solid #3182ce;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #2b6cb0;
+    margin-bottom: 24px;
+  }
+
+  .scoreboard {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .scoreboard .label { font-size: 14px; color: #718096; }
+  .scoreboard .score-val { font-size: 28px; font-weight: 700; color: #2b6cb0; }
+  .progress-bar-wrap { flex: 1; min-width: 160px; }
+  .progress-bar-bg { background: #e2e8f0; border-radius: 999px; height: 10px; overflow: hidden; }
+  .progress-bar-fill { background: #3182ce; height: 10px; border-radius: 999px; transition: width .4s; width: 0%; }
+  .progress-label { font-size: 12px; color: #718096; margin-top: 4px; }
+
+  .question-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: box-shadow .2s;
+  }
+  .question-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.11); }
+
+  .question-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .q-num {
+    background: #2b6cb0;
+    color: #fff;
+    border-radius: 50%;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-text { font-size: 15px; line-height: 1.6; }
+  .q-text em { font-style: italic; color: #4a5568; }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 540px) { .options-grid { grid-template-columns: 1fr; } }
+
+  .option-btn {
+    background: #f7fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    transition: background .15s, border-color .15s, transform .1s;
+    user-select: none;
+    line-height: 1.5;
+  }
+  .option-btn:hover:not(.locked) {
+    background: #ebf8ff;
+    border-color: #90cdf4;
+    transform: translateY(-1px);
+  }
+  .option-btn .opt-label { font-weight: 700; margin-right: 6px; color: #2b6cb0; }
+  .option-btn.correct { background: #c6f6d5; border-color: #38a169; }
+  .option-btn.correct .opt-label { color: #276749; }
+  .option-btn.incorrect { background: #fed7d7; border-color: #e53e3e; }
+  .option-btn.incorrect .opt-label { color: #c53030; }
+  .option-btn.locked { cursor: default; }
+  .option-btn.reveal-correct { background: #c6f6d5; border-color: #38a169; }
+  .option-btn.reveal-correct .opt-label { color: #276749; }
+
+  .explanation {
+    display: none;
+    margin-top: 14px;
+    background: #fffff0;
+    border-left: 4px solid #d69e2e;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #744210;
+    line-height: 1.6;
+  }
+  .explanation.show { display: block; }
+
+  .hint { font-size: 11px; color: #a0aec0; margin-top: 10px; text-align: right; }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: #a0aec0;
+    margin-top: 30px;
+    padding-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="gov">Republic of the Philippines · Department of Education</div>
+  <h1>Pre-Board Examination in Literature</h1>
+  <div class="sub">MAJORSHIP — 40-Item Examination</div>
+  <div class="date">05-10-2026 | Saturday</div>
+</header>
+
+<div class="instructions">
+  📖 <strong>Instructions:</strong> Read each question carefully. <strong>Double-click</strong> an option to select your answer. Green = Correct · Red = Incorrect. An explanation will appear after each answer.
+</div>
+
+<div class="scoreboard">
+  <div>
+    <div class="label">Score</div>
+    <div class="score-val"><span id="correct-count">0</span> / <span id="answered-count">0</span></div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 of 40 answered</div>
+  </div>
+</div>
+
+<div id="quiz-container"></div>
+
+<footer>Literature Pre-Board Examination · Quiz 2 · 2026</footer>
+
+<script>
+const questions = [
+  {
+    q: "Which of the following Philippine epics features the hero Baltog and the cyclopean monster Rabot?",
+    opts: ["Bidasari","Ibalon","Darangan","Hinilawod"],
+    answer: 1,
+    exp: "Ibalon is a Philippine epic from Bicol that features the hero Baltog who fought the monster Rabot. It is one of the three major heroes of the epic alongside Handyong and Bantong."
+  },
+  {
+    q: "Which is NOT a characteristic of 18th-century children's literature?",
+    opts: ["Moralistic and intellectual tone","Inclusion of fantasy and imagination","Didactic and educational purpose","Stories written for children's improvement"],
+    answer: 1,
+    exp: "The 18th century focused on moral instruction, reason, and educational purpose — fantasy and imagination were NOT celebrated then. That belonged more to the Victorian Age."
+  },
+  {
+    q: "Aeneas is to Virgil; Metamorphoses is to ________.",
+    opts: ["Homer","Hesiod","Ovid","Sophocles"],
+    answer: 2,
+    exp: "The Metamorphoses was written by Ovid, a Roman poet. Just as Virgil wrote the Aeneid (featuring Aeneas), Ovid authored the Metamorphoses — a collection of mythological transformations."
+  },
+  {
+    q: "Which of the following periods promoted the belief that literature should awaken intellect and moral reason among children?",
+    opts: ["Classical Period","18th Century","Renaissance","Edwardian Age"],
+    answer: 1,
+    exp: "The 18th Century (Age of Enlightenment) promoted rationalism, moral instruction, and intellectual development in children's literature. Writers like John Locke influenced this trend."
+  },
+  {
+    q: "Which among the following statements about Classical Children's Literature is/are TRUE?\n\nI. Stories were oral and used to comfort or teach lessons.\nII. Fables often featured animals with human-like traits.\nIII. National epics emerged during this time.\nIV. Chapbooks were created to share fairy tales.",
+    opts: ["I and II","I, II, and III","II and IV","I, III, and IV"],
+    answer: 0,
+    exp: "In Classical Children's Literature, stories were oral (I) and fables like Aesop's featured animals with human traits (II). Chapbooks belong to the Renaissance, not the Classical period — so IV is false. National epics also belong to a later period."
+  },
+  {
+    q: "Which among the following periods is known as the \"Golden Age of Children's Literature\"?",
+    opts: ["18th Century","Victorian Age","Edwardian Age","20th Century"],
+    answer: 1,
+    exp: "The Victorian Age (19th century) is called the Golden Age of Children's Literature. Works like Alice in Wonderland, Treasure Island, and Little Women were published during this era."
+  },
+  {
+    q: "Chapbooks are to Renaissance, as Hornbooks are to ________.",
+    opts: ["Classical Period","Middle Ages","Renaissance","18th Century"],
+    answer: 1,
+    exp: "Hornbooks — flat wooden paddles with printed letters and prayers — were used to teach children in the Middle Ages. Chapbooks were small, cheap printed booklets common during the Renaissance."
+  },
+  {
+    q: "Mr. Enriquez's students read The Adventures of Aeneas and debated how Aeneas prioritized his mission over love. What Roman value does this emphasize?",
+    opts: ["Wealth over honor","Passion over reason","Duty over personal desire","Individualism over loyalty"],
+    answer: 2,
+    exp: "Aeneas leaving Dido to fulfill his destiny of founding Rome is the classic example of Roman pietas — duty to gods, family, and state — placed above personal desire and love."
+  },
+  {
+    q: "Which statement correctly describes New Realism in post-World War II children's literature?",
+    opts: ["It presented fantasy worlds and magic.","It reflected human struggles and social issues.","It emphasized royal characters and castles.","It rejected stories about ordinary people."],
+    answer: 1,
+    exp: "New Realism emerged after WWII to address real social concerns — poverty, war, racism, and family struggles — in children's books, making literature more relatable and honest."
+  },
+  {
+    q: "Which refers to the literary work that served as one of the earliest Western fairy-tale collections, including Cinderella and Puss in Boots?",
+    opts: ["Mother Goose Tales","A Little Pretty Pocket Book","Arabian Nights","Beauty and the Beast"],
+    answer: 0,
+    exp: "Charles Perrault's Tales of Mother Goose (Contes de ma mère l'Oye, 1697) is one of the earliest Western fairy-tale collections, including Cinderella, Puss in Boots, and Sleeping Beauty."
+  },
+  {
+    q: "The story of Dorothy being swept by a cyclone into a magical world and seeking the Wizard's help belongs to which author?",
+    opts: ["Louisa May Alcott","Frank L. Baum","Lewis Carroll","Hans Christian Andersen"],
+    answer: 1,
+    exp: "The Wonderful Wizard of Oz was written by L. Frank Baum (1900). Dorothy is swept by a tornado (cyclone) from Kansas to the magical land of Oz."
+  },
+  {
+    q: "Which of the following pairs is correct?\n\nI. Charlie and the Chocolate Factory – Roald Dahl\nII. The Giver – Lois Lowry\nIII. To Kill a Mockingbird – Louisa May Alcott\nIV. Little Women – Frances Hodgson Burnett",
+    opts: ["I and II","I, II, and III","II and IV","III and IV"],
+    answer: 0,
+    exp: "Pair I is correct: Charlie and the Chocolate Factory is by Roald Dahl. Pair II is correct: The Giver is by Lois Lowry. III is wrong — To Kill a Mockingbird is by Harper Lee. IV is wrong — Little Women is by Louisa May Alcott."
+  },
+  {
+    q: "In Little Women, the March sisters navigate family life during the Civil War while learning about love, sacrifice, and ambition. Which theme best captures the story's essence?",
+    opts: ["The dangers of greed","The power of imagination","The importance of moral growth","The pursuit of fame and fortune"],
+    answer: 2,
+    exp: "Little Women by Louisa May Alcott centers on the moral and personal development of the four March sisters as they face hardships, relationships, and aspirations — making moral growth its central theme."
+  },
+  {
+    q: "Which among the following statements is TRUE of Celtic mythology?\n\nI. Druids served as storytellers and priests.\nII. Their religion involved local cult practices.\nIII. They worshipped over 300 deities.\nIV. Their stories centered on sea voyages only.",
+    opts: ["I, II, and III","II and IV","I and III","I, III, and IV"],
+    answer: 0,
+    exp: "Celtic mythology: Druids were indeed priests and storytellers (I); Celtic religion did involve local cults (II); they had over 300 deities (III). Celtic stories were NOT limited to sea voyages — IV is false."
+  },
+  {
+    q: "Which of the following pairs is correctly matched?\n\nI. A Little Princess – Frances Hodgson Burnett\nII. Peter Pan – J.M. Barrie\nIII. Winnie the Pooh – Frank L. Baum\nIV. Little Women – Louisa May Alcott",
+    opts: ["I, II, and IV","II, III, and IV","I and III only","I, II, III, and IV"],
+    answer: 0,
+    exp: "Pairs I, II, and IV are correct. Winnie the Pooh was written by A.A. Milne, NOT Frank L. Baum — so III is incorrect. The correct answer is I, II, and IV."
+  },
+  {
+    q: "Athena is to wisdom, as Aphrodite is to ________.",
+    opts: ["beauty and love","war and courage","justice and truth","dreams and prophecy"],
+    answer: 0,
+    exp: "In Greek mythology, Athena is the goddess of wisdom and Aphrodite is the goddess of beauty and love. This is one of the most well-known divine associations in Greek mythology."
+  },
+  {
+    q: "Which statement is TRUE about Norse mythology?\n\nI. It is pantheistic and features the gods Aesir and Vanir.\nII. It centers around the concept of Ragnarok.\nIII. It follows the independence of mankind.\nIV. Yggdrasil connects different realms.",
+    opts: ["II and III","I and III","I, II, and IV","I, II, III, and IV"],
+    answer: 2,
+    exp: "Norse mythology features the Aesir and Vanir (I), is built around Ragnarok — the apocalyptic end of the world (II), and uses Yggdrasil — the world tree — to connect the nine realms (IV). Statement III (independence of mankind) is not a defining feature."
+  },
+  {
+    q: "Which among the following books was written by Charles Perrault?",
+    opts: ["The Tales of Mother Goose","The Arabian Nights","The Little Mermaid","The Wonderful Wizard of Oz"],
+    answer: 0,
+    exp: "Charles Perrault (1628–1703) authored Histoires ou Contes du Temps passé (Tales of Mother Goose). The Arabian Nights is of Middle Eastern origin; The Little Mermaid is by Andersen; Wizard of Oz is by Baum."
+  },
+  {
+    q: "The Wonderful Wizard of Oz by Frank L. Baum demonstrates which literary characteristic?",
+    opts: ["Straightforward language with imaginative fantasy","Realistic moral lessons and political satire","Strict religious and didactic tone","Historical retelling of heroism"],
+    answer: 0,
+    exp: "Baum's Oz is celebrated for its use of simple, accessible language combined with imaginative, whimsical fantasy — a deliberate break from the heavy moralism of earlier children's literature."
+  },
+  {
+    q: "Mrs. Ortega's class discussed Peter Pan, focusing on the theme of never wanting to grow up. Which period does this work belong to?",
+    opts: ["Edwardian Age","18th Century","Renaissance","New Realism"],
+    answer: 0,
+    exp: "Peter Pan by J.M. Barrie was first published in 1904, during the Edwardian Age (1901–1910). The Edwardian period is known for imaginative children's literature exploring childhood and wonder."
+  },
+  {
+    q: "Ms. Mendoza's students compared The Cattle Raid of Cooley with The Iliad. They concluded that both explore the consequences of pride and war. What universal theme did they identify?",
+    opts: ["Gods control all human choices","Heroes always win in the end","Human pride leads to conflict","Love conquers all"],
+    answer: 2,
+    exp: "Both The Cattle Raid of Cooley (Irish epic) and The Iliad (Greek epic) portray how human pride and hubris trigger devastating conflicts — a universal theme found across world literature and mythology."
+  },
+  {
+    q: "To Kill a Mockingbird is considered a cornerstone of adolescent literature because it _______",
+    opts: ["Uses animal characters to teach moral lessons","Describes a fantasy land full of magical creatures","Presents themes of racial injustice and moral growth","Focuses on educational content regarding the harsh reality of life"],
+    answer: 2,
+    exp: "Harper Lee's To Kill a Mockingbird (1960) is foundational in adolescent literature for its unflinching exploration of racial injustice in the American South and the moral awakening of young Scout Finch."
+  },
+  {
+    q: "Mr. Lopez's literature class compared Orpheus and Eurydice to modern love stories where characters lose someone dear but find meaning in art. What does this myth symbolize?",
+    opts: ["The greed of men","The fear of darkness","The futility of rebellion","The endurance of love"],
+    answer: 3,
+    exp: "The myth of Orpheus and Eurydice is a timeless symbol of love's enduring power — Orpheus's descent into the Underworld to reclaim his beloved demonstrates love that persists beyond death."
+  },
+  {
+    q: "During a cross-cultural comparison, a teacher noted that both Osiris and Jesus Christ were figures resurrected to bring hope and renewal. What common theme does this illustrate?",
+    opts: ["The sacredness of the afterlife","The cycle of death and rebirth","The punishment of immortality","The illusion of divine perfection"],
+    answer: 1,
+    exp: "Both Osiris (Egyptian mythology) and Jesus Christ embody the motif of death and resurrection — illustrating the universal theme of the cycle of death and rebirth, bringing hope and renewal to their followers."
+  },
+  {
+    q: "Horus: avenger of Osiris; Set: ________.",
+    opts: ["god of truth and harmony","god of chaos and desert","god of wisdom and war","god of healing"],
+    answer: 1,
+    exp: "In Egyptian mythology, Set is the god of chaos, storms, and the desert. He murdered his brother Osiris, and was later defeated by Horus, who avenged his father's death."
+  },
+  {
+    q: "Which myth portrays the dangers of curiosity and mistrust between lovers?",
+    opts: ["Cupid and Psyche","Apollo and Daphne","Pyramus and Thisbe","Orpheus and Eurydice"],
+    answer: 0,
+    exp: "In the myth of Cupid and Psyche, Psyche's curiosity leads her to look at Cupid against his wishes, causing him to flee. The myth warns about the destructive power of curiosity and mistrust in a relationship."
+  },
+  {
+    q: "Mrs. Yulo assigned Matilda for her students' reading. They discussed how Matilda overcomes neglect and unfair treatment. This best represents which author's literary style?",
+    opts: ["Harper Lee","Lois Lowry","Roald Dahl","C.S. Lewis"],
+    answer: 2,
+    exp: "Matilda (1988) was written by Roald Dahl. His signature style features clever, imaginative child protagonists who triumph over cruel or neglectful adults — with dark humor and whimsy."
+  },
+  {
+    q: "If Greek mythology is to anthropomorphism, then Philippine mythology is to ________.",
+    opts: ["animism","fatalism","dualism","nationalism"],
+    answer: 0,
+    exp: "Philippine mythology is rooted in animism — the belief that spirits inhabit natural objects, animals, and places. Greek mythology is characterized by anthropomorphism — giving gods human-like forms and emotions."
+  },
+  {
+    q: "Alice in Wonderland is to logic and nonsense, as The Hobbit is to ________.",
+    opts: ["mythological adventure","simple moral stories","educational realism","religious allegory"],
+    answer: 0,
+    exp: "Just as Alice in Wonderland is defined by its play on logic and nonsense, The Hobbit by J.R.R. Tolkien is defined by mythological adventure — drawing on Norse and Celtic mythology for its world-building."
+  },
+  {
+    q: "In the myth of Osiris, a jealous brother kills him and scatters his body. His wife, Isis, reassembles him and gives birth to their son, Horus, who later avenges his father. What universal theme does this myth convey?",
+    opts: ["The futility of vengeance","The immortality of the soul","The power of human greed","The rejection of divine power"],
+    answer: 1,
+    exp: "The Myth of Osiris conveys the immortality of the soul — Osiris is resurrected through Isis's love and magic, symbolizing that the soul transcends death and that life continues beyond the physical."
+  },
+  {
+    q: "If Hesiod is to Theogony, then Homer is to ________.",
+    opts: ["Aeneid","Beowulf","Odyssey","Metamorphoses"],
+    answer: 2,
+    exp: "Hesiod wrote the Theogony (origin of the gods). Homer is credited with the Iliad and the Odyssey. The Aeneid is by Virgil; Beowulf is an anonymous Old English poem; Metamorphoses is by Ovid."
+  },
+  {
+    q: "During a lesson on fantasy literature, Ms. Reyes asked her students to compare The Chronicles of Narnia and The Hobbit. What is the shared feature of these two works?",
+    opts: ["They reflect didactic and realistic elements.","They both emphasize moralistic instruction.","They portray ordinary life in historical England.","They use fantasy worlds to express moral struggles."],
+    answer: 3,
+    exp: "Both The Chronicles of Narnia (C.S. Lewis) and The Hobbit (J.R.R. Tolkien) use richly imagined fantasy worlds as the backdrop for exploring moral struggles — courage, good vs. evil, sacrifice, and identity."
+  },
+  {
+    q: "Ragnarok in Norse mythology is most comparable to which concept in modern faiths?",
+    opts: ["The Garden of Eden","The Last Judgment","The Tower of Babel","The Ten Commandments"],
+    answer: 1,
+    exp: "Ragnarok — the apocalyptic battle ending the Norse world — is comparable to The Last Judgment in Christian belief, where the world ends and all are judged. Both represent a final cosmic reckoning."
+  },
+  {
+    q: "The Story of Dr. Dolittle is to Hugh Lofting, as Winnie the Pooh is to ________.",
+    opts: ["C.S. Lewis","J.R.R. Tolkien","AA Milne","Roald Dahl"],
+    answer: 2,
+    exp: "Winnie the Pooh was created by A.A. Milne, first published in 1926. Hugh Lofting created the Dr. Dolittle series. These are both iconic works of classic British children's literature."
+  },
+  {
+    q: "During mythology week, Ms. Alcaraz told her students that men once suffered childbirth pains due to a woman. Which story was she referring to?",
+    opts: ["The Curse of Macha","The Birth of Athena","The Adventures of Aeneas","The Myth of Osiris"],
+    answer: 0,
+    exp: "The Curse of Macha is a Celtic myth in which Macha, forced to race while pregnant, curses the men of Ulster to suffer the pangs of childbirth for generations. It is a powerful myth of divine retribution."
+  },
+  {
+    q: "A teacher asks students to discuss why Hercules must complete twelve labors as a punishment for killing his family. What theme from Greek mythology does this illustrate?",
+    opts: ["Fate and retribution","The pursuit of wealth","The power of magic","The rejection of the gods"],
+    answer: 0,
+    exp: "Hercules's Twelve Labors illustrate fate and retribution — as punishment for killing his family in a divine-induced madness, he must complete twelve impossible tasks, showing the gods' power to enforce justice."
+  },
+  {
+    q: "If Jean Jacques Rousseau is to didactic writing, then John Newbery is to ________.",
+    opts: ["moralistic tales","chapbooks","children-centered publications","mythological epics"],
+    answer: 2,
+    exp: "John Newbery (1713–1767) is known as the father of children's literature for pioneering children-centered publications — books made specifically for children's enjoyment. The Newbery Medal is named after him."
+  },
+  {
+    q: "Which of the following gods or heroes is correctly associated with wisdom, poetry, and runes in Norse belief?",
+    opts: ["Thor","Odin","Freyr","Loki"],
+    answer: 1,
+    exp: "Odin (Allfather) is the Norse god of wisdom, poetry, war, and runes. He sacrificed his eye at Mimir's well to gain knowledge, and hung himself on Yggdrasil to discover the runes."
+  },
+  {
+    q: "Which is NOT a key feature of Norse mythology?",
+    opts: ["Fatalistic worldview","Belief in Ragnarok","Polytheism","Reincarnation"],
+    answer: 3,
+    exp: "Norse mythology is characterized by fatalism, belief in Ragnarok, and polytheism. Reincarnation is NOT a key feature — it is associated with Eastern religions like Hinduism and Buddhism, not Norse belief."
+  },
+  {
+    q: "If Zeus is to Greek mythology, then Ra is to ________.",
+    opts: ["Norse mythology","Roman mythology","Egyptian mythology","Celtic mythology"],
+    answer: 2,
+    exp: "Ra (or Re) is the supreme sun god of Egyptian mythology — analogous to Zeus in Greek mythology. Zeus rules the Greek pantheon; Ra rules the Egyptian pantheon as king of the gods and creator deity."
+  }
+];
+
+let correctCount = 0;
+let answeredCount = 0;
+
+function playSound(correct) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (correct) {
+    // Happy ascending chime
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.1 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.35);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.4);
+    });
+  } else {
+    // Descending buzz
+    [300, 220].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.3);
+      osc.start(ctx.currentTime + i * 0.18);
+      osc.stop(ctx.currentTime + i * 0.18 + 0.35);
+    });
+  }
+}
+
+function updateScoreboard() {
+  document.getElementById('correct-count').textContent = correctCount;
+  document.getElementById('answered-count').textContent = answeredCount;
+  const pct = (answeredCount / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = answeredCount + ' of ' + questions.length + ' answered';
+}
+
+function buildQuiz() {
+  const container = document.getElementById('quiz-container');
+  const labels = ['A','B','C','D'];
+
+  questions.forEach((q, qi) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'q' + qi;
+
+    // Question text — handle newlines (for multi-statement questions)
+    const qLines = q.q.split('\n').map(l => l.trim()).filter(Boolean);
+    let qHTML = qLines.map((line, idx) => {
+      if (idx === 0) return `<span>${line}</span>`;
+      return `<br><em>${line}</em>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="question-header">
+        <div class="q-num">${qi + 1}</div>
+        <div class="q-text">${qHTML}</div>
+      </div>
+      <div class="options-grid" id="opts-${qi}"></div>
+      <div class="explanation" id="exp-${qi}"></div>
+      <div class="hint">💡 Double-click an option to select your answer</div>
+    `;
+
+    const optsDiv = card.querySelector(`#opts-${qi}`);
+    q.opts.forEach((opt, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="opt-label">${labels[oi]}.</span>${opt}`;
+      btn.addEventListener('dblclick', () => handleAnswer(qi, oi, btn, card));
+      optsDiv.appendChild(btn);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function handleAnswer(qi, oi, btn, card) {
+  const optsDivBtns = card.querySelectorAll('.option-btn');
+  // Already answered?
+  if (btn.classList.contains('locked')) return;
+  // Lock all
+  optsDivBtns.forEach(b => b.classList.add('locked'));
+
+  const isCorrect = oi === questions[qi].answer;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    correctCount++;
+  } else {
+    btn.classList.add('incorrect');
+    // Reveal correct
+    optsDivBtns[questions[qi].answer].classList.add('reveal-correct');
+  }
+  answeredCount++;
+  playSound(isCorrect);
+
+  // Show explanation
+  const expDiv = card.querySelector(`#exp-${qi}`);
+  const labels = ['A','B','C','D'];
+  expDiv.innerHTML = `<strong>✅ Correct Answer: ${labels[questions[qi].answer]}. ${questions[qi].opts[questions[qi].answer]}</strong><br>${questions[qi].exp}`;
+  expDiv.classList.add('show');
+
+  // Hide hint
+  card.querySelector('.hint').style.display = 'none';
+
+  updateScoreboard();
+}
+
+buildQuiz();
+updateScoreboard();
+</script>
+</body>
+</html>
